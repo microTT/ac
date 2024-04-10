@@ -1,8 +1,13 @@
-/**
- * @param {number} n
- * @return {number}
- */
+
 const climbStairs = function (n) {
+  const dp = [1, 1, 2]
+  for (let i = 3; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2]
+  }
+  return dp[n]
+}
+
+const climbStairsI = function (n) {
   const dp = [1]
   const steps = [1, 2]
   steps.forEach((step) => {
@@ -43,4 +48,5 @@ const climbStairsR = function (n) {
 }
 
 console.log(climbStairs(20))
+console.log(climbStairsI(20))
 console.log(climbStairsR(20))
