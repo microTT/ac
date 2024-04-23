@@ -19,22 +19,21 @@
 const isPalindrome = function (head) {
   let result = true
 
-  const nodes = []
-  let length = 0
-  function traverse(node, index) {
-    if (!node) {
-      length = index
+  let left = head
+
+  function traverse(right) {
+    if (!right) {
       return null
     }
 
-    nodes.push(node)
-    traverse(node.next, index + 1)
-    if (node.val !== nodes[length - index - 1].val) {
+    traverse(right.next)
+    if (right.val !== left.val) {
       result = false
     }
+    left = left.next
   }
 
-  traverse(head, 0)
+  traverse(head)
 
   return result
 }
