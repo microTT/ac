@@ -6,10 +6,9 @@
  * }
  */
 
-
 function ListNode(val, next) {
-  this.val = (val===undefined ? 0 : val)
-  this.next = (next===undefined ? null : next)
+  this.val = val === undefined ? 0 : val
+  this.next = next === undefined ? null : next
 }
 
 /**
@@ -17,26 +16,26 @@ function ListNode(val, next) {
  * @param {number} x
  * @return {ListNode}
  */
-var partition = function(head, x) {
-  const lowerList = new ListNode(null, null);
-  const upperList = new ListNode(null, null);
+const partition = function (head, x) {
+  const lowerList = new ListNode(null, null)
+  const upperList = new ListNode(null, null)
 
-  let traveLowerNode = lowerList;
-  let traveUpperNode = upperList;
+  let traveLowerNode = lowerList
+  let traveUpperNode = upperList
 
-  let traveListNode = head;
+  let traveListNode = head
 
-  while(traveListNode) {
+  while (traveListNode) {
     if (traveListNode.val < x) {
-      traveLowerNode.next = traveListNode;
+      traveLowerNode.next = traveListNode
     } else {
-      traveUpperNode.next = traveListNode;
+      traveUpperNode.next = traveListNode
     }
-    traveListNode = traveListNode.next;
+    traveListNode = traveListNode.next
   }
 
-  traveUpperNode.next = null;
-  traveLowerNode.next = upperList.next;
+  traveUpperNode.next = null
+  traveLowerNode.next = upperList.next
 
-  return lowerList.next;
-};
+  return lowerList.next
+}
