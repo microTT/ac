@@ -10,9 +10,7 @@
  */
 const SnapshotArray = function (length) {
   this.maxSize = length
-  this.snaped = false
-  this.currentSnapId = -1
-  this.currentStorage = {}
+  this.currentSnapId = 0
   this.snapshotStorage = {}
 }
 
@@ -22,14 +20,8 @@ const SnapshotArray = function (length) {
  * @return {void}
  */
 SnapshotArray.prototype.set = function (index, val) {
-  if (index >= this.maxSize) {
-    return
-  }
-  if (this.snaped) {
-    this.currentStorage = { ...this.currentStorage }
-  }
-  this.snaped = false
-  this.currentStorage[index] = val
+  this.snapshotStorage[index] ||= []
+  this.snapshotStorage[index].push([this.currentSnapId, val])
 }
 
 /**
@@ -37,9 +29,22 @@ SnapshotArray.prototype.set = function (index, val) {
  */
 SnapshotArray.prototype.snap = function () {
   this.currentSnapId += 1
-  this.snapshotStorage[this.currentSnapId] = this.currentStorage
-  this.snaped = true
-  return this.currentSnapId
+  return this.currentSnapId - 1
+}
+
+SnapshotArray.prototype.__searchIndexSnapshot = function (snapList, sarchId) {
+  let left = -1
+  let right = snapList.length
+  while (left + 1 < right) {
+    const mid = Math.floor((left + right) / 2)
+    const current = snapList[mid]
+    if (current[0] <= sarchId) {
+      left = mid
+    } else {
+      right = mid
+    }
+  }
+  return left >= 0 ? snapList[left] : null
 }
 
 /**
@@ -48,7 +53,12 @@ SnapshotArray.prototype.snap = function () {
  * @return {number}
  */
 SnapshotArray.prototype.get = function (index, snap_id) {
-  return this.snapshotStorage[snap_id][index] || 0
+  const snapList = this.snapshotStorage[index] || []
+  if (!snapList.length) {
+    return 0
+  }
+  const setHistory = this.__searchIndexSnapshot(snapList, snap_id)
+  return setHistory ? setHistory[1] : 0
 }
 
 /**
