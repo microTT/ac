@@ -11,37 +11,36 @@
  * @return {number}
  */
 const numDistinct = function (s, t) {
-  let result = 0
-
-  const memo = []
-
-  function dp(str1, length1, str2, length2) {
-    if (length2 === 0) {
-      return 1
-    } else if (length1 === 0) {
-      return 0
-    }
-    if (typeof memo[length1]?.[length2] === 'number') {
-      return memo[length1]?.[length2]
-    }
-
-    let currentResult = 0
-
-    if (str1[length1 - 1] === str2[length2 - 1]) {
-      currentResult =
-        dp(str1, length1 - 1, str2, length2 - 1) +
-        dp(str1, length1 - 1, str2, length2)
-    } else {
-      currentResult = dp(str1, length1 - 1, str2, length2)
-    }
-
-    memo[length1] ||= []
-    memo[length1][length2] = currentResult
-    return currentResult
+  const dp = []
+  for (let index = 0; index < t.length; index++) {
+    dp[0] ||= []
+    dp[0][index] = 0
   }
 
-  result = dp(s, s.length, t, t.length)
+  for (let index = 0; index < s.length; index++) {
+    dp[index] ||= []
+    dp[index][0] = 1
+  }
 
-  return result % (Math.pow(10, 9) + 7)
+  dp[0][0] = 1
+  //  特别注意的一点是，这里memo的存储key是length，但是实际上遍历的是index，所以经常会有memo空间+1的情况,可以看到下面存的时候+1了
+
+  for (let indexS = 0; indexS < s.length; indexS++) {
+    const charS = s[indexS]
+    dp[indexS + 1] ||= []
+    for (let indexT = 0; indexT < t.length; indexT++) {
+      const charT = t[indexT]
+      dp[indexS + 1][indexT + 1] ||= 0
+      if (charS === charT) {
+        dp[indexS + 1][indexT + 1] +=
+          (dp[indexS + 1 - 1][indexT + 1 - 1] || 0) +
+          (dp[indexS + 1 - 1][indexT + 1] || 0)
+      } else {
+        dp[indexS + 1][indexT + 1] += dp[indexS + 1 - 1][indexT + 1] || 0
+      }
+    }
+  }
+
+  return dp[s.length][t.length] % (Math.pow(10, 9) + 7)
 }
 // @lc code=end
